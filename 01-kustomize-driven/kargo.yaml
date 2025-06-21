@@ -1,0 +1,239 @@
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Project
+metadata:
+  name: kargo-microservices
+  annotations:
+    # This annotation ensures Projects (Namespaces) are created first
+    # when deployed via Argo CD
+    argocd.argoproj.io/sync-wave: "-1"
+
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: ProjectConfig
+metadata:
+  name: kargo-microservices
+  namespace: kargo-microservices
+spec:
+  promotionPolicies:
+    - stageSelector:
+        name: dev
+      autoPromotionEnabled: true
+    - stageSelector:
+        name: prod
+      autoPromotionEnabled: false
+
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: PromotionTask
+metadata:
+  name: microservices-promotion
+  namespace: kargo-microservices
+spec:
+  vars:
+    - name: gitRepo
+    - name: imageRegistry
+  steps:
+    - uses: git-clone
+      config:
+        repoURL: ${{ vars.gitRepo }}
+        checkout:
+          - branch: main
+            path: ./src
+
+    - uses: kustomize-set-image
+      as: update-image
+      config:
+        path: ./src/env/${{ ctx.stage }}
+        images:
+          - image: ${{ vars.imageRegistry }}/adservice
+            tag: >
+              ${{ imageFrom(
+                "us-central1-docker.pkg.dev/google-samples/microservices-demo/adservice"
+              ).Tag }}
+          - image: ${{ vars.imageRegistry }}/cartservice
+            tag: >
+              ${{ imageFrom(
+                "us-central1-docker.pkg.dev/google-samples/microservices-demo/cartservice"
+              ).Tag }}
+          - image: ${{ vars.imageRegistry }}/checkoutservice
+            tag: >
+              ${{ imageFrom(
+                "us-central1-docker.pkg.dev/google-samples/microservices-demo/checkoutservice"
+              ).Tag }}
+          - image: ${{ vars.imageRegistry }}/currencyservice
+            tag: >
+              ${{ imageFrom(
+                "us-central1-docker.pkg.dev/google-samples/microservices-demo/currencyservice"
+              ).Tag }}
+          - image: ${{ vars.imageRegistry }}/emailservice
+            tag: >
+              ${{ imageFrom(
+                "us-central1-docker.pkg.dev/google-samples/microservices-demo/emailservice"
+              ).Tag }}
+          - image: ${{ vars.imageRegistry }}/frontend
+            tag: >
+              ${{ imageFrom(
+                "us-central1-docker.pkg.dev/google-samples/microservices-demo/frontend"
+              ).Tag }}
+          - image: ${{ vars.imageRegistry }}/loadgenerator
+            tag: >
+              ${{ imageFrom(
+                "us-central1-docker.pkg.dev/google-samples/microservices-demo/loadgenerator"
+              ).Tag }}
+          - image: ${{ vars.imageRegistry }}/paymentservice
+            tag: >
+              ${{ imageFrom(
+                "us-central1-docker.pkg.dev/google-samples/microservices-demo/paymentservice"
+              ).Tag }}
+          - image: ${{ vars.imageRegistry }}/productcatalogservice
+            tag: >
+              ${{ imageFrom(
+                "us-central1-docker.pkg.dev/google-samples/microservices-demo/productcatalogservice"
+              ).Tag }}
+          - image: ${{ vars.imageRegistry }}/recommendationservice
+            tag: >
+              ${{ imageFrom(
+                "us-central1-docker.pkg.dev/google-samples/microservices-demo/recommendationservice"
+              ).Tag }}
+          - image: ${{ vars.imageRegistry }}/shippingservice
+            tag: >
+              ${{ imageFrom(
+                "us-central1-docker.pkg.dev/google-samples/microservices-demo/shippingservice"
+              ).Tag }}
+          - image: ${{ vars.imageRegistry }}/shoppingassistantservice
+            tag: >
+              ${{ imageFrom(
+                "us-central1-docker.pkg.dev/google-samples/microservices-demo/shoppingassistantservice"
+              ).Tag }}
+
+    - uses: git-commit
+      as: commit
+      config:
+        path: ./src
+        message: >
+          Updated ${{ ctx.stage }} images - Freight: ${{ ctx.freight.alias || ctx.freight.id }}
+
+    - uses: git-push
+      config:
+        path: ./src
+
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Warehouse
+metadata:
+  name: online-boutique
+  namespace: kargo-microservices
+spec:
+  subscriptions:
+    - image:
+        repoURL: >-
+          us-central1-docker.pkg.dev/google-samples/microservices-demo/adservice
+    - image:
+        repoURL: >-
+          us-central1-docker.pkg.dev/google-samples/microservices-demo/cartservice
+    - image:
+        repoURL: >-
+          us-central1-docker.pkg.dev/google-samples/microservices-demo/checkoutservice
+    - image:
+        repoURL: >-
+          us-central1-docker.pkg.dev/google-samples/microservices-demo/currencyservice
+    - image:
+        repoURL: >-
+          us-central1-docker.pkg.dev/google-samples/microservices-demo/emailservice
+    - image:
+        repoURL: >-
+          us-central1-docker.pkg.dev/google-samples/microservices-demo/frontend
+    - image:
+        repoURL: >-
+          us-central1-docker.pkg.dev/google-samples/microservices-demo/loadgenerator
+    - image:
+        repoURL: >-
+          us-central1-docker.pkg.dev/google-samples/microservices-demo/paymentservice
+    - image:
+        repoURL: >-
+          us-central1-docker.pkg.dev/google-samples/microservices-demo/productcatalogservice
+    - image:
+        repoURL: >-
+          us-central1-docker.pkg.dev/google-samples/microservices-demo/recommendationservice
+    - image:
+        repoURL: >-
+          us-central1-docker.pkg.dev/google-samples/microservices-demo/shippingservice
+    - image:
+        repoURL: >-
+          us-central1-docker.pkg.dev/google-samples/microservices-demo/shoppingassistantservice
+
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Stage
+metadata:
+  name: dev
+  namespace: kargo-microservices
+  annotations:
+    kargo.akuity.io/color: green
+spec:
+  requestedFreight:
+    - origin:
+        kind: Warehouse
+        name: online-boutique
+      sources:
+        direct: true
+  promotionTemplate:
+    spec:
+      vars:
+        - name: gitRepo
+          value: https://github.com/cyberslot/kargo-microservices.git
+        - name: imageRegistry
+          value: >
+            us-central1-docker.pkg.dev/google-samples/microservices-demo
+      steps:
+        - task:
+            name: microservices-promotion
+          as: promotion
+
+        # Trigger Argo CD Application sync after git changes
+        - uses: argocd-update
+          config:
+            apps:
+              - name: online-boutique-${{ ctx.stage }}
+                sources:
+                  - repoURL: ${{ vars.gitRepo }}
+                    desiredRevision: ${{ outputs.promotion.commit }}
+
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Stage
+metadata:
+  name: prod
+  namespace: kargo-microservices
+  annotations:
+    kargo.akuity.io/color: red
+spec:
+  requestedFreight:
+    - origin:
+        kind: Warehouse
+        name: online-boutique
+      sources:
+        stages:
+          - dev
+  promotionTemplate:
+    spec:
+      vars:
+        - name: gitRepo
+          value: https://github.com/cyberslot/kargo-microservices.git
+        - name: imageRegistry
+          value: >
+            us-central1-docker.pkg.dev/google-samples/microservices-demo
+      steps:
+        - task:
+            name: microservices-promotion
+          as: promotion
+
+        # Trigger Argo CD Application sync after git changes
+        - uses: argocd-update
+          config:
+            apps:
+              - name: online-boutique-${{ ctx.stage }}
+                sources:
+                  - repoURL: ${{ vars.gitRepo }}
+                    desiredRevision: ${{ outputs.promotion.commit }}
