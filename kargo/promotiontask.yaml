@@ -19,61 +19,36 @@ spec:
       config:
         path: ./src/env/${{ vars.environment }}
         images:
-          - image: >-
-              "us-central1-docker.pkg.dev/google-samples/microservices-demo/adservice"
-            tag: >-
-              ${{ imageFrom("us-central1-docker.pkg.dev/google-samples/microservices-demo/adservice").Tag }}
-          - image: >-
-              "us-central1-docker.pkg.dev/google-samples/microservices-demo/cartservice"
-            tag: >-
-              ${{ imageFrom("us-central1-docker.pkg.dev/google-samples/microservices-demo/cartservice").Tag }}
-          - image: >-
-              "us-central1-docker.pkg.dev/google-samples/microservices-demo/checkoutservice"
-            tag: >-
-              ${{ imageFrom("us-central1-docker.pkg.dev/google-samples/microservices-demo/checkoutservice").Tag }}
-          - image: >-
-              "us-central1-docker.pkg.dev/google-samples/microservices-demo/currencyservice"
-            tag: >-
-              ${{ imageFrom("us-central1-docker.pkg.dev/google-samples/microservices-demo/currencyservice").Tag }}
-          - image: >-
-              "us-central1-docker.pkg.dev/google-samples/microservices-demo/emailservice"
-            tag: >-
-              ${{ imageFrom("us-central1-docker.pkg.dev/google-samples/microservices-demo/emailservice").Tag }}
-          - image: >-
-              "us-central1-docker.pkg.dev/google-samples/microservices-demo/frontend"
-            tag: >-
-              ${{ imageFrom("us-central1-docker.pkg.dev/google-samples/microservices-demo/frontend").Tag }}
-          - image: >-
-              "us-central1-docker.pkg.dev/google-samples/microservices-demo/loadgenerator"
-            tag: >-
-              ${{ imageFrom("us-central1-docker.pkg.dev/google-samples/microservices-demo/loadgenerator").Tag }}
-          - image: >-
-              "us-central1-docker.pkg.dev/google-samples/microservices-demo/paymentservice"
-            tag: >-
-              ${{ imageFrom("us-central1-docker.pkg.dev/google-samples/microservices-demo/paymentservice").Tag }}
-          - image: >-
-              "us-central1-docker.pkg.dev/google-samples/microservices-demo/productcatalogservice"
-            tag: >-
-              ${{ imageFrom("us-central1-docker.pkg.dev/google-samples/microservices-demo/productcatalogservice").Tag }}
-          - image: >-
-              "us-central1-docker.pkg.dev/google-samples/microservices-demo/recommendationservice"
-            tag: >-
-              ${{ imageFrom("us-central1-docker.pkg.dev/google-samples/microservices-demo/recommendationservice").Tag }}
-          - image: >-
-              "us-central1-docker.pkg.dev/google-samples/microservices-demo/shippingservice"
-            tag: >-
-              ${{ imageFrom("us-central1-docker.pkg.dev/google-samples/microservices-demo/shippingservice").Tag }}
-          - image: >-
-              "us-central1-docker.pkg.dev/google-samples/microservices-demo/shoppingassistantservice"
-            tag: >-
-              ${{ imageFrom("us-central1-docker.pkg.dev/google-samples/microservices-demo/shoppingassistantservice").Tag }}
+          - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/adservice
+            tag: ${{ imageFrom("us-central1-docker.pkg.dev/google-samples/microservices-demo/adservice").Tag }}
+          - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/cartservice
+            tag: ${{ imageFrom("us-central1-docker.pkg.dev/google-samples/microservices-demo/cartservice").Tag }}
+          - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/checkoutservice
+            tag: ${{ imageFrom("us-central1-docker.pkg.dev/google-samples/microservices-demo/checkoutservice").Tag }}
+          - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/currencyservice
+            tag: ${{ imageFrom("us-central1-docker.pkg.dev/google-samples/microservices-demo/currencyservice").Tag }}
+          - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/emailservice
+            tag: ${{ imageFrom("us-central1-docker.pkg.dev/google-samples/microservices-demo/emailservice").Tag }}
+          - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/frontend
+            tag: ${{ imageFrom("us-central1-docker.pkg.dev/google-samples/microservices-demo/frontend").Tag }}
+          - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/loadgenerator
+            tag: ${{ imageFrom("us-central1-docker.pkg.dev/google-samples/microservices-demo/loadgenerator").Tag }}
+          - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/paymentservice
+            tag: ${{ imageFrom("us-central1-docker.pkg.dev/google-samples/microservices-demo/paymentservice").Tag }}
+          - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/productcatalogservice
+            tag: ${{ imageFrom("us-central1-docker.pkg.dev/google-samples/microservices-demo/productcatalogservice").Tag }}
+          - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/recommendationservice
+            tag: ${{ imageFrom("us-central1-docker.pkg.dev/google-samples/microservices-demo/recommendationservice").Tag }}
+          - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/shippingservice
+            tag: ${{ imageFrom("us-central1-docker.pkg.dev/google-samples/microservices-demo/shippingservice").Tag }}
+          - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/shoppingassistantservice
+            tag: ${{ imageFrom("us-central1-docker.pkg.dev/google-samples/microservices-demo/shoppingassistantservice").Tag }}
 
     - uses: git-commit
       as: commit
       config:
         path: ./src
-        message: >
-          - update-image
+        message: ${{ outputs.update-image.commitMessage }}
 
     - uses: git-push
       config:
