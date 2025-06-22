@@ -14,42 +14,56 @@ spec:
         direct: true
   promotionTemplate:
     spec:
+      vars:
+        - name: environment
+          value: dev
       steps:
-        - uses: git-clone
-          config:
-            repoURL: https://github.com/cyberslot/kargo-microservices.git
-            checkout:
-              - branch: main
-                path: ./src
+        - task:
+            name: update-microservices
+      # steps:
+      #   - uses: git-clone
+      #     config:
+      #       repoURL: https://github.com/cyberslot/kargo-microservices.git
+      #       checkout:
+      #         - branch: main
+      #           path: ./src
 
-        - uses: kustomize-set-image
-          as: update-image
-          config:
-            path: ./src/env/dev
-            images:
-              - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/adservice
-              - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/cartservice
-              - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/checkoutservice
-              - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/currencyservice
-              - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/emailservice
-              - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/frontend
-              - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/loadgenerator
-              - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/paymentservice
-              - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/productcatalogservice
-              - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/recommendationservice
-              - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/shippingservice
-              - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/shoppingassistantservice
+      #   - uses: kustomize-set-image
+      #     as: update-image
+      #     config:
+      #       path: ./src/env/dev
+      #       images:
+      #         - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/adservice
+      #         - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/cartservice
+      #         - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/checkoutservice
+      #         - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/currencyservice
+      #         - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/emailservice
+      #         - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/frontend
+      #         - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/loadgenerator
+      #         - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/paymentservice
+      #         - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/productcatalogservice
+      #         - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/recommendationservice
+      #         - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/shippingservice
+      #         - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/shoppingassistantservice
 
-        - uses: git-commit
-          as: commit
-          config:
-            path: ./src
-            messageFromSteps:
-              - update-image
+      #   - uses: git-commit
+      #     as: commit
+      #     config:
+      #       path: ./src
+      #       messageFromSteps:
+      #         - update-image
 
-        - uses: git-push
-          config:
-            path: ./src
+      #   - uses: git-push
+      #     config:
+      #       path: ./src
+      #   # Attempt to fill the GitOps gap with Argo CD integration (the missing link that nothing watches Git for changes)
+      #   - uses: argocd-update
+      #     config:
+      #       apps:
+      #         - name: online-boutique-${{ ctx.stage }}
+      #           sources:
+      #             - repoURL: https://github.com/cyberslot/kargo-microservices.git
+      #               desiredRevision: ${{ outputs.commit.commit }}
 
 ---
 apiVersion: kargo.akuity.io/v1alpha1
@@ -69,39 +83,53 @@ spec:
           - dev
   promotionTemplate:
     spec:
+      vars:
+        - name: environment
+          value: prod
       steps:
-        - uses: git-clone
-          config:
-            repoURL: https://github.com/cyberslot/kargo-microservices.git
-            checkout:
-              - branch: main
-                path: ./src
+        - task:
+            name: update-microservices
+      # steps:
+      #   - uses: git-clone
+      #     config:
+      #       repoURL: https://github.com/cyberslot/kargo-microservices.git
+      #       checkout:
+      #         - branch: main
+      #           path: ./src
 
-        - uses: kustomize-set-image
-          as: update-image
-          config:
-            path: ./src/env/prod
-            images:
-              - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/adservice
-              - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/cartservice
-              - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/checkoutservice
-              - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/currencyservice
-              - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/emailservice
-              - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/frontend
-              - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/loadgenerator
-              - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/paymentservice
-              - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/productcatalogservice
-              - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/recommendationservice
-              - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/shippingservice
-              - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/shoppingassistantservice
+      #   - uses: kustomize-set-image
+      #     as: update-image
+      #     config:
+      #       path: ./src/env/prod
+      #       images:
+      #         - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/adservice
+      #         - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/cartservice
+      #         - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/checkoutservice
+      #         - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/currencyservice
+      #         - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/emailservice
+      #         - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/frontend
+      #         - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/loadgenerator
+      #         - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/paymentservice
+      #         - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/productcatalogservice
+      #         - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/recommendationservice
+      #         - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/shippingservice
+      #         - image: us-central1-docker.pkg.dev/google-samples/microservices-demo/shoppingassistantservice
 
-        - uses: git-commit
-          as: commit
-          config:
-            path: ./src
-            messageFromSteps:
-              - update-image
+      #   - uses: git-commit
+      #     as: commit
+      #     config:
+      #       path: ./src
+      #       messageFromSteps:
+      #         - update-image
 
-        - uses: git-push
-          config:
-            path: ./src
+      #   - uses: git-push
+      #     config:
+      #       path: ./src
+      #   # Attempt to fill the GitOps gap with Argo CD integration (the missing link that nothing watches Git for changes)
+      #   - uses: argocd-update
+      #     config:
+      #       apps:
+      #         - name: online-boutique-${{ ctx.stage }}
+      #           sources:
+      #             - repoURL: https://github.com/cyberslot/kargo-microservices.git
+      #               desiredRevision: ${{ outputs.commit.commit }}
