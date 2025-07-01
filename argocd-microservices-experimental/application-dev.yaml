@@ -1,0 +1,45 @@
+# Argo CD Application for DEV cluster
+# Apply this on the DEV cluster: gke_vupop-stg-wbx7_europe-west4-a_vupop-stg-cluster
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: online-boutique-dev
+  namespace: argocd
+  annotations:
+    # Argo CD Image Updater configuration for automatic image updates
+    argocd-image-updater.argoproj.io/image-list: >
+      adservice=us-central1-docker.pkg.dev/google-samples/microservices-demo/adservice:~v0.10,
+      cartservice=us-central1-docker.pkg.dev/google-samples/microservices-demo/cartservice:~v0.10,
+      checkoutservice=us-central1-docker.pkg.dev/google-samples/microservices-demo/checkoutservice:~v0.10,
+      currencyservice=us-central1-docker.pkg.dev/google-samples/microservices-demo/currencyservice:~v0.10,
+      emailservice=us-central1-docker.pkg.dev/google-samples/microservices-demo/emailservice:~v0.10,
+      frontend=us-central1-docker.pkg.dev/google-samples/microservices-demo/frontend:~v0.10,
+      loadgenerator=us-central1-docker.pkg.dev/google-samples/microservices-demo/loadgenerator:~v0.10,
+      paymentservice=us-central1-docker.pkg.dev/google-samples/microservices-demo/paymentservice:~v0.10,
+      productcatalogservice=us-central1-docker.pkg.dev/google-samples/microservices-demo/productcatalogservice:~v0.10,
+      recommendationservice=us-central1-docker.pkg.dev/google-samples/microservices-demo/recommendationservice:~v0.10,
+      shippingservice=us-central1-docker.pkg.dev/google-samples/microservices-demo/shippingservice:~v0.10,
+      shoppingassistantservice=us-central1-docker.pkg.dev/google-samples/microservices-demo/shoppingassistantservice:~v0.10
+    # Configure git write-back method for persistent image updates
+    argocd-image-updater.argoproj.io/write-back-method: git
+    argocd-image-updater.argoproj.io/git-branch: main
+    # Update strategy: semver with patch-level updates only (~v0.10 = v0.10.x)
+    argocd-image-updater.argoproj.io/update-strategy: semver
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/cyberslot/kargo-microservices.git
+    targetRevision: main
+    path: env/dev
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: online-boutique
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - PrunePropagationPolicy=foreground
+      - PruneLast=true
+    automated:
+      prune: true
+      selfHeal: true
