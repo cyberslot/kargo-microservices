@@ -31,7 +31,7 @@ spec:
   source:
     repoURL: https://github.com/cyberslot/kargo-microservices.git
     targetRevision: main
-    path: env/dev
+    path: argocd-microservices-experimental/env/dev
   destination:
     server: https://kubernetes.default.svc
     namespace: online-boutique
