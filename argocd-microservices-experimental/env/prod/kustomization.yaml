@@ -6,32 +6,30 @@ namespace: online-boutique
 resources:
   - ../../kustomize
 images:
-- name: us-central1-docker.pkg.dev/google-samples/microservices-demo/adservice
-  newTag: v0.10.2
-- name: us-central1-docker.pkg.dev/google-samples/microservices-demo/cartservice
-  newTag: v0.10.2
-- name: us-central1-docker.pkg.dev/google-samples/microservices-demo/checkoutservice
-  newTag: v0.10.2
-- name: us-central1-docker.pkg.dev/google-samples/microservices-demo/currencyservice
-  newTag: v0.10.2
-- name: us-central1-docker.pkg.dev/google-samples/microservices-demo/emailservice
-  newTag: v0.10.2
-- name: us-central1-docker.pkg.dev/google-samples/microservices-demo/frontend
-  newTag: v0.10.2
-- name: us-central1-docker.pkg.dev/google-samples/microservices-demo/loadgenerator
-  newTag: v0.10.2
-- name: us-central1-docker.pkg.dev/google-samples/microservices-demo/paymentservice
-  newTag: v0.10.2
-- name: us-central1-docker.pkg.dev/google-samples/microservices-demo/productcatalogservice
-  newTag: v0.10.2
-- name: us-central1-docker.pkg.dev/google-samples/microservices-demo/recommendationservice
-  newTag: v0.10.2
-- name: us-central1-docker.pkg.dev/google-samples/microservices-demo/shippingservice
-  newTag: v0.10.2
-- name: us-central1-docker.pkg.dev/google-samples/microservices-demo/shoppingassistantservice
-  newTag: v0.10.2
-
-
+  - name: us-central1-docker.pkg.dev/google-samples/microservices-demo/adservice
+    newTag: v0.10.2
+  - name: us-central1-docker.pkg.dev/google-samples/microservices-demo/cartservice
+    newTag: v0.10.3
+  - name: us-central1-docker.pkg.dev/google-samples/microservices-demo/checkoutservice
+    newTag: v0.10.3
+  - name: us-central1-docker.pkg.dev/google-samples/microservices-demo/currencyservice
+    newTag: v0.10.3
+  - name: us-central1-docker.pkg.dev/google-samples/microservices-demo/emailservice
+    newTag: v0.10.2
+  - name: us-central1-docker.pkg.dev/google-samples/microservices-demo/frontend
+    newTag: v0.10.2
+  - name: us-central1-docker.pkg.dev/google-samples/microservices-demo/loadgenerator
+    newTag: v0.10.2
+  - name: us-central1-docker.pkg.dev/google-samples/microservices-demo/paymentservice
+    newTag: v0.10.2
+  - name: us-central1-docker.pkg.dev/google-samples/microservices-demo/productcatalogservice
+    newTag: v0.10.2
+  - name: us-central1-docker.pkg.dev/google-samples/microservices-demo/recommendationservice
+    newTag: v0.10.2
+  - name: us-central1-docker.pkg.dev/google-samples/microservices-demo/shippingservice
+    newTag: v0.10.2
+  - name: us-central1-docker.pkg.dev/google-samples/microservices-demo/shoppingassistantservice
+    newTag: v0.10.2
 # Optional: Add production-specific patches here for scaling, resource limits, etc.
 # patches:
 #   - target:
